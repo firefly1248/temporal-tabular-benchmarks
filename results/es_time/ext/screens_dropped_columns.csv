@@ -1,0 +1,4 @@
+dataset,feature,cut,label_auc,drift_auc
+nypd-shooting,LOC_OF_OCCUR_DESC,3,0.57,0.99
+nypd-shooting,LOC_CLASSFCTN_DESC,3,0.50,0.98
+nypd-shooting,LOCATION_DESC,3,0.53,0.92

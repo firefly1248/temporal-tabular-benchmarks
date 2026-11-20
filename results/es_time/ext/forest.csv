@@ -1,0 +1,13 @@
+block,hypothesis,first,second,estimate,lower,upper,label,delta,delta_published_eight,level,n
+24 datasets,H1,d_t,dr_t,-0.001489,-0.004768,0.001789,no difference found,0.002990,0.007267,0.993750,24
+24 datasets,H2,d,ef,0.003818,-0.001619,0.009254,no difference found,0.002990,0.007267,0.993750,24
+24 datasets,H3,t,d_own,0.003901,0.000316,0.007486,first fit ahead,0.002990,0.007267,0.993750,24
+24 datasets,H4,t,er,0.003546,0.000680,0.006412,first fit ahead,0.002990,0.007267,0.993750,24
+16 new datasets,H1,d_t,dr_t,-0.001348,-0.004441,0.001745,,0.002990,0.007267,0.993750,16
+16 new datasets,H2,d,ef,0.002594,0.000203,0.004985,,0.002990,0.007267,0.993750,16
+16 new datasets,H3,t,d_own,0.003557,-0.001098,0.008212,,0.002990,0.007267,0.993750,16
+16 new datasets,H4,t,er,0.004002,0.000248,0.007756,,0.002990,0.007267,0.993750,16
+without the low-signal datasets,H1,d_t,dr_t,0.000226,-0.003362,0.003814,,0.002990,0.007267,0.993750,14
+without the low-signal datasets,H2,d,ef,0.005435,-0.003796,0.014665,,0.002990,0.007267,0.993750,14
+without the low-signal datasets,H3,t,d_own,0.001742,-0.002059,0.005543,,0.002990,0.007267,0.993750,14
+without the low-signal datasets,H4,t,er,0.003086,0.000011,0.006161,,0.002990,0.007267,0.993750,14
