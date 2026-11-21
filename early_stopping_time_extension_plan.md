@@ -19,6 +19,13 @@ The extension is the second and last look. No dataset is added after it, and the
 | `results/es_time/delta.json` | `3d10b820d52ed3ac59de19b417f1ca87513b5e9bbf3ca453e18f687cba2eb293` |
 | `results/es_time/prepared/_manifest.json` (a local file of the first run, not tracked in the repository; its hash is recorded in the first run's `run_log.jsonl`) | `687216575424d7e39723161a8d7bc5932d06112459363b6eaf81bf4e50fc9cd4` |
 
+**Pinned for the extension.** The runner asserts these two local files of the preparation step, which are not tracked in the repository.
+
+| File | sha256 |
+|---|---|
+| `_manifest_ext.json` | `bf4bb759b045471a85037e9169d9c4db7db7d5e70d955bec9d04c1f66a0ea9ce` |
+| `_summary_thin_ext.csv` | `6da2fa6fc360587cd8849ec1f61afdad411c4c3fec073d4e0172eb44e7ad4ab9` |
+
 The stored fit files of the eight published datasets are identified by the hashes in the `inputs` of `delta.json`.
 
 ## The first plan in brief
@@ -170,7 +177,7 @@ No labels; none changes a registered number. On the 24 datasets: the tree-count 
 
 ## Runner
 
-`scripts/es_time_ext.py` imports `scripts/es_time.py` and replaces the dataset list (the 16 new datasets), the paths, the manifest name and the functions that hard-code them: `load`, `run_log` and `check`. It reuses the stored fits of the eight published datasets and asserts the hashes of their prepared files, of the first run's manifest, of the registered files in the table above (so the checkout used must contain them unmodified) and of the stored fit files the analysis reads. Its other assertions are the first plan's, applied to the new datasets. The extension scripts are run from a checkout of SmallDataBenchmarks at `f2d89f2` with the extension scripts copied into its `scripts/` folder.
+`scripts/es_time_ext.py` imports `scripts/es_time.py` and replaces the dataset list (the 16 new datasets), the paths, the manifest name and the functions that hard-code them: `load` and `run_log`. It reuses the stored fits of the eight published datasets and asserts the hashes of their prepared files, of the first run's manifest, of the registered files in the table above (so the checkout used must contain them unmodified) and of the stored fit files the analysis reads. Its other assertions are the first plan's, applied to the new datasets. The extension scripts are run from a checkout of SmallDataBenchmarks at `f2d89f2` with the extension scripts copied into its `scripts/` folder.
 
 `scripts/es_time_ext_analyse.py` contains the δ step and the analysis. It holds its own copies of the registered functions it needs (interval, pooling, A/A splits, labels), with the level, the datasets and the paths as arguments, and imports nothing that writes to the first run's outputs: the registered `es_time_analyse.delta()` would overwrite `delta.json`, and `half_width` binds 98.75 % as its default argument. `delta_ext.json` records the level 0.99375, and the analysis asserts the level and a t multiplier of 3.0095 at 23 degrees of freedom. The script is committed and pushed, with a self-test on synthetic data, before the full run, and it is not changed after the first test score is read except by a dated deviation. The run log records the sha256 of this plan, of `es_time_prep_ext.py`, of the runner, of the analysis script, of the extension manifest, of the registered files and of the stored fit files.
 
@@ -197,3 +204,13 @@ As in the first plan; also a dense variant, further datasets after this look, an
 ## Run conditions
 
 Order of steps: this plan and the prep script are committed and pushed first; then the runner and the analysis script with its self-test; then the run (check mode, the smoke run, the full run); then the results. No run starts before its runner and analysis script are committed and pushed. The run log's start time is compared with their commit times before the results are read, and a run log that predates either commit invalidates the run, which is then repeated. The analysis step runs twice with byte-identical outputs and writes the output hashes to a manifest. A facts sheet ties every quoted number to an output line and is checked by a script.
+
+## Deviations
+
+2026-11-20, before the run.
+
+- Check mode fits a reduced unit (two candidates, three cuts, all arms) of every new dataset and requires that no fit fails. It prints no test score and none has been read. Reduced units of the same kind were fitted on all 16 new datasets in the development of the runner, before the scripts were committed, so the statement in the History section that no arm has been fitted on a new dataset holds only up to those development runs.
+- The runner stops at the first unit with a failed fit instead of saving it. Units of the smoke run (seed 0 of nyc-311 and dota2) are units of the full run, so a run-log entry whose inputs differ from the stored units' is refused when the run starts and again by the analysis. A log from which no unit was saved is archived under a new name and not deleted.
+- The runner also pins the two preparation files in the table above.
+- The analysis script prints, beside H1, the drift AUC and H1 per cut of the two columns that change coding. It prints the unseen-level shares per dataset and for three groups (the published datasets, the new datasets with recoded levels, the other new datasets). Its `forest.csv` carries labels for the 24-dataset block only. Pooled estimates without nyc-311 appear in `analysis_ext.txt` under an exploratory heading. A `reproduce` command checks its functions at the first look's level against the first look's public values.
+- The remaining exploratory items listed above are done in a separate script, `scripts/es_time_ext_explore.py`, and are labelled exploratory.
