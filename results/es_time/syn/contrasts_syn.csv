@@ -1,0 +1,24 @@
+id,family,contrast,predicted,estimate,lower,upper,verdict,n
+P1,A,"H3, weak",>,0.001868,-0.001573,0.00531,unresolved,40
+P2,A,H3 weak - H3 medium,>,0.000489,-0.002767,0.003744,unresolved,40
+P3,A,"H4, weak",>,0.00298,-0.000327,0.006286,unresolved,40
+R1,A,H4 weak - H4 medium,none,-0.000665,-0.00552,0.004189,not resolved,40
+R2,A,"T - D_T, weak",none,0.000564,-0.001541,0.002668,not resolved,40
+R3,A,"T - DR_T, weak",none,0.000538,-0.00113,0.002205,not resolved,40
+P4,A,"DR - ER, weak",>,0.001143,-0.00097,0.003256,unresolved,40
+R4,A,"H1, weak",none,-2.6e-05,-0.002251,0.0022,not resolved,40
+P5,H,"H2 entity - H2 row, tau 1.5",>,0.016206,0.010088,0.022324,supported,40
+P6,H,"H1 entity - H1 row, tau 1.5",<,-0.009468,-0.013393,-0.005543,supported,40
+R5,H,"H4 entity - H4 row, tau 1.5",none,-0.001918,-0.00736,0.003525,not resolved,40
+P7,E,H2 stop - reference,>,0.003737,0.001668,0.005806,supported,40
+P8,E,H2 deep - reference,>,0.005498,0.002489,0.008508,supported,40
+R6,E,H1 stop - reference,none,0.000187,-0.001713,0.002087,not resolved,40
+R7,E,H1 deep - reference,none,0.001096,-0.000684,0.002876,not resolved,40
+P9,B,H1 blip - reference,<,-0.012553,-0.016494,-0.008612,supported,40
+P10,B,H2 blip - reference,<,-0.002604,-0.005291,8.2e-05,unresolved,40
+P11,B,H3 blip - reference,>,0.013994,0.00981,0.018179,supported,40
+R8,C,H1 - reference,none,-0.001313,-0.003984,0.001358,not resolved,40
+R9,U,"H2 raw - H2 normalised, gamma ln 32",none,0.00274,-0.000315,0.005796,not resolved,40
+R10,U,"H4 raw - H4 normalised, gamma ln 32",none,0.001796,-0.001954,0.005547,not resolved,40
+R11,U,"H1 raw - H1 normalised, gamma ln 32",none,-8.3e-05,-0.002726,0.002559,not resolved,40
+P12,X,H2 kappa 8 - reference,>,0.008993,0.005209,0.012777,supported,40

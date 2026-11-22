@@ -14,3 +14,14 @@ Results in `results/es_time/ext/`:
 - `per_dataset_ext.csv`: per dataset, cut and seed; `cut` 0 is the mean over the three cuts, `lo95` and `hi95` are 95 % intervals over the five seeds.
 - `stopping_set_gaps_ext.csv`: H1 and H2 per dataset and cut, with the minority-share gap between the freshest 10 % and the test block (`gap_test`) and the older training rows (`gap_older`).
 - `delta_ext.json`: δ, its 15 half-widths and the hashes of the fits it read; `outputs_manifest.json`: hashes of the analysis outputs; `run_log_ext.jsonl`: inputs, versions and start time of the smoke run and the full run.
+
+## Synthetic mechanisms
+
+A separate study on generated data with hand-set signal strength and drift, run with the same arms: `early_stopping_time_synthetic_plan.md` (the plan), `scripts/es_time_syn.py` (generator, check mode, runner, diagnostics), `scripts/es_time_syn_analyse.py` (analysis and self-test).
+
+Results in `results/es_time/syn/`:
+
+- `analysis_syn.txt`: the check, the 23 registered contrasts with verdicts, the Q1 decision, then descriptive tables and diagnostics, labelled so.
+- `contrasts_syn.csv`: the registered contrasts; `cells_syn.csv`: every contrast per cell, mean over cuts and replicates, 95 % intervals.
+- `diagnostics_syn.csv`: data diagnostics per cell and replicate (rows with `rep` -1 hold drift AUC on replicate 1000).
+- `outputs_manifest_syn.json`: hashes of the analysis outputs; `run_log_syn.jsonl`: commit, versions, threads and hashes of the run.
