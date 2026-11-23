@@ -4,12 +4,15 @@ Holds its own copies of the registered functions it needs (interval, pooling, A/
 datasets and the paths as arguments. It imports nothing from es_time_analyse, which binds a 98.75 % level as a default
 argument and whose delta() overwrites the first run's delta.json.
 
-delta     T's final E2 fits of the 24 datasets -> results/es_time/ext/delta_ext.json (run once, first)
+delta     T's final E2 fits of the 23 datasets -> results/es_time/ext/delta_ext.json (run once, first)
 analyse   primary, secondary, sensitivity, descriptive and diagnostic outputs; needs delta_ext.json, never recomputes it
 manifest  sha256 of the outputs -> outputs_manifest.json
 check     every number of a facts sheet against the cited line of an output (default: results/es_time/ext/facts_ext.md)
 selftest  the analysis on synthetic fits with planted effects, in a temporary folder; reads no results
-reproduce the eight published datasets at the first look's level: their A/A delta, per-dataset points and pooled rows
+reproduce the seven published datasets at the first look's level: their A/A delta, per-dataset points and pooled rows
+
+f1-dnf (Ergast terms, non-commercial use only) was dropped after the run; every step reads the other 23 datasets (plan,
+Deviations, 2026-11-23). Its fits are hash-checked with the other published fits but never read.
 
 Usage: python -m scripts.es_time_ext_analyse delta | analyse | manifest | check [sheet] | selftest | reproduce
 """
@@ -33,15 +36,17 @@ DESCRIPTIVE = {"D - DR": ("d", "dr"), "T - EF": ("t", "ef"), "D - D_own": ("d", 
                "D_T9 - D_T": ("d_t9", "d_t")}
 PAIRS = [("d_own_es", "ef"), ("er", "ef"), ("t", "ef"), ("t", "er")]
 KEY = ["pop", "scheme", "dataset", "seed", "cut"]
-ALL = ext.PUBLISHED + ext.NEW
+DROPPED = ["f1-dnf"]
+PUB = [n for n in ext.PUBLISHED if n not in DROPPED]  # the seven published datasets kept
+ALL = PUB + ext.NEW
 NYC = ["tlc-yellow", "citibike", "nyc-311"]
 ARMS = ("t", "er", "ef", "d", "dr", "d_own_es", "d_own", "er_t", "ef_t", "dr_t", "d_t", "d_t9")
 FILES = ["analysis_ext.txt", "per_dataset_ext.csv", "stopping_set_gaps_ext.csv", "delta_ext.json", "forest.csv",
          "per_dataset_points.csv"]
 ROWS_PER_UNIT = 2 * 3 * 732  # thin: E2 and E1, three cuts, 732 fits per scheme and cut
 # The plan's subset lists (Population, check 3 and the low-signal rule); the summary files must reproduce them.
-LOW = {"chicago-food", "nypd-shooting", "stats19", "nyc-collisions", "tlc-yellow", "citibike", "dota2", "f1-dnf",
-       "nycflights", "bank-full"}
+LOW = {"chicago-food", "nypd-shooting", "stats19", "nyc-collisions", "tlc-yellow", "citibike", "dota2", "nycflights",
+       "bank-full"}
 LAG = {"nycflights", "nypd-shooting", "dota2", "nyc-311"}
 # Datasets whose rare levels are recoded to "other" (plan, Unchanged from the first plan).
 RECODED = ["austin", "kickstarter", "chicago-food", "seattle-stops", "london-fire", "dvsa-mot", "nyc-collisions", "citibike",
@@ -82,13 +87,13 @@ def compute_delta(fits, level):
             "rows_read": f"arm t, stage final, scheme e2, {len(t)} rows"}
 
 
-FIRST_LEVEL = 0.9875  # the first look's level, 8 published datasets
+FIRST_LEVEL = 0.9875  # the first look's level
 
 
 def published_delta(fits):
-    """The first look's A/A procedure on the eight published datasets (0.00727), at the first look's level."""
+    """The first look's A/A procedure on the seven published datasets kept (0.00866), at the first look's level."""
     t = fits[(fits.arm == "t") & (fits.stage == "final") & (fits.scheme == "e2")]
-    s = t.groupby(["dataset", "seed"]).ap.mean().unstack("seed").loc[ext.PUBLISHED]
+    s = t.groupby(["dataset", "seed"]).ap.mean().unstack("seed").loc[PUB]
     return float(np.sqrt(np.mean(np.square(split_halves(s, FIRST_LEVEL)))))
 
 
@@ -184,7 +189,7 @@ def report(fits, delta_new, delta_pub, summary, level, drift=None):
     p = L.append
     p(f"Primary: thin, E2 (differences of test average precision, mean over 3 cuts and 5 seeds per dataset; pooled over "
       f"{len(ALL)} datasets; t-interval at {level:.3%}, {len(ALL) - 1} df, multiplier {multiplier(len(ALL), level):.4f}; "
-      f"delta {delta_new:.5f}, delta of the eight published datasets {delta_pub:.5f})")
+      f"delta {delta_new:.5f}, delta of the seven published datasets {delta_pub:.5f})")
     for h, (a, b) in HYP.items():
         d = diff(w, a, b)
         per = per_dataset(d, "e2")
@@ -195,7 +200,7 @@ def report(fits, delta_new, delta_pub, summary, level, drift=None):
         p(f"    label: {label(lo, hi, delta_new)} (delta {delta_new:.5f}); ahead {ahead} / behind {behind} / tied "
           f"{len(per) - ahead - behind}; leave-one-out: {'not robust, flagged by ' + ', '.join(bad) if bad else 'robust'}; "
           f"cells without a value: {int(d.xs(('thin', 'e2'), level=('pop', 'scheme')).isna().sum())}")
-        p(f"    companion label under the delta of the eight published datasets {delta_pub:.5f} (no verdict): {label(lo, hi, delta_pub)}")
+        p(f"    companion label under the delta of the seven published datasets {delta_pub:.5f} (no verdict): {label(lo, hi, delta_pub)}")
         p(f"    without low-signal datasets ({', '.join(low) or 'none'}): {fmt(per.drop(low), level)}")
         if h == "H1":
             p(f"    without datasets above 5 % EF stopping-set label lag ({', '.join(lag) or 'none'}): "
@@ -216,8 +221,8 @@ def report(fits, delta_new, delta_pub, summary, level, drift=None):
     p("\nSecondary, no labels (same level)")
     for h, (a, b) in HYP.items():
         per = per_dataset(diff(w, a, b), "e2")
-        mw, lw, hw, dfw = welch(per.loc[ext.PUBLISHED].to_numpy(), per.loc[new].to_numpy(), level)
-        p(f" {h}: the {len(new)} new datasets alone {fmt(per.loc[new], level)}; the eight published datasets minus the new "
+        mw, lw, hw, dfw = welch(per.loc[PUB].to_numpy(), per.loc[new].to_numpy(), level)
+        p(f" {h}: the {len(new)} new datasets alone {fmt(per.loc[new], level)}; the seven published datasets minus the new "
           f"ones {mw:+.4f} [{lw:+.4f}, {hw:+.4f}] (Welch, {dfw:.1f} df); New York 2023 datasets as one unit "
           f"{fmt(one_unit(per, NYC, 'new-york-2023'), level)}")
     p("\nSensitivity, no labels: E1 (expanding window)")
@@ -248,7 +253,7 @@ def report(fits, delta_new, delta_pub, summary, level, drift=None):
     agg = lambda x: x.mean() if x.name not in ("best", "best_ap_iter") else x.median()
     L += fin.groupby("arm")[cols].agg(agg).round(4).to_string().split("\n")
     p(" the same, for the published datasets (never recoded), the new datasets with rare levels recoded and the other new ones:")
-    group = np.where(fin.dataset.isin(ext.PUBLISHED), "published", np.where(fin.dataset.isin(RECODED), "new, recoded", "new, not recoded"))
+    group = np.where(fin.dataset.isin(PUB), "published", np.where(fin.dataset.isin(RECODED), "new, recoded", "new, not recoded"))
     L += fin.assign(group=group).groupby(["group", "arm"])[cols].agg(agg).round(4).to_string().split("\n")
     p(" unseen-level shares per dataset (final ER and EF fits, mean): stopping set, test block")
     L += fin.groupby(["dataset", "arm"])[["unseen_stop", "unseen_tgt"]].mean().round(4).to_string().split("\n")
@@ -294,15 +299,15 @@ def per_dataset_table(w):
 
 def forest(w, summary, delta_new, delta_pub, level):
     low = list(summary.index[summary.low_signal])
-    blocks = {"24 datasets": ALL, "16 new datasets": ext.NEW, "without the low-signal datasets": [d for d in ALL if d not in low]}
+    blocks = {"23 datasets": ALL, "16 new datasets": ext.NEW, "without the low-signal datasets": [d for d in ALL if d not in low]}
     rows, points = [], []
     for block, names in blocks.items():
         for h, (a, b) in HYP.items():
             per = per_dataset(diff(w, a, b), "e2").loc[names]
             m, lo, hi = pooled(per, level)
             rows.append(dict(block=block, hypothesis=h, first=a, second=b, estimate=m, lower=lo, upper=hi,
-                             label=label(lo, hi, delta_new) if block == "24 datasets" else "", delta=delta_new,
-                             delta_published_eight=delta_pub,
+                             label=label(lo, hi, delta_new) if block == "23 datasets" else "", delta=delta_new,
+                             delta_published_seven=delta_pub,
                              level=level, n=len(names)))
             points += [dict(block=block, hypothesis=h, dataset=d, value=v) for d, v in per.items()]
     return pd.DataFrame(rows), pd.DataFrame(points)
@@ -313,7 +318,7 @@ def write_outputs(fits, summary, delta_meta, delta_pub, loader, out, want, drift
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     level = delta_meta["level"]
-    assert level == LEVEL and abs(multiplier(len(ALL), level) - 3.0095) < 5e-5, "level or multiplier is not the plan's"
+    assert level == LEVEL and abs(multiplier(len(ALL), level) - 3.0231) < 5e-5, "level or multiplier is not the plan's"
     lines = check_complete(fits, want) + report(fits, delta_meta["delta"], delta_pub, summary, level, drift)
     (out / "analysis_ext.txt").write_text("\n".join(lines) + "\n")
     w = cells(fits)
@@ -328,10 +333,12 @@ def write_outputs(fits, summary, delta_meta, delta_pub, loader, out, want, drift
 # ---------------------------------------------------------------- steps on the stored fits
 
 def stored():
-    """The stored fits: the eight published datasets (hashes checked against the delta.json of the first look) and the new ones."""
+    """The stored fits: the seven published datasets kept (the hashes of all eight are checked against the delta.json of
+    the first look) and the new ones."""
     inputs = json.load(open(ext.FIRST / "delta.json"))["inputs"]
     pub = ext.stored_fit_files()
     assert {n: ext.sha256(p) for n, p in pub.items()} == {n: inputs[n] for n in pub}, "published fits changed"
+    pub = {n: p for n, p in pub.items() if n.rsplit("_seed", 1)[0] in PUB}
     want = [f"{n}_seed{s}.joblib" for n in ext.NEW for s in SEEDS]
     new = {f: ext.FITS / "thin" / f for f in want}
     assert all(p.exists() for p in new.values()), "the new fits are incomplete"
@@ -343,7 +350,7 @@ def read(files):
 
 
 def summary_frame():
-    first = pd.read_csv(ext.FIRST / "prepared/_summary_thin.csv").set_index("dataset").loc[ext.PUBLISHED]
+    first = pd.read_csv(ext.FIRST / "prepared/_summary_thin.csv").set_index("dataset").loc[PUB]
     new = pd.read_csv(ext.PREPARED / "_summary_thin_ext.csv").set_index("dataset").loc[ext.NEW]
     cols = ["low_signal", "c3_ef_max", "persistence"]
     return pd.concat([first[cols], new[cols]]).loc[ALL]
@@ -370,7 +377,7 @@ def delta_step():
     pub, new = stored()
     fits = read({**pub, **new})
     meta = compute_delta(fits, LEVEL)
-    meta["delta_published_eight"] = published_delta(fits)
+    meta["delta_published_seven"] = published_delta(fits)
     meta["inputs"] = {n: ext.sha256(p) for n, p in new.items()}
     meta["published_inputs"] = {n: ext.sha256(p) for n, p in pub.items()}
     ext.OUT.mkdir(parents=True, exist_ok=True)
@@ -388,7 +395,7 @@ def analyse_step():
     pub, new = stored()
     assert {n: ext.sha256(p) for n, p in new.items()} == meta["inputs"], "new results changed since delta was computed"
     assert {n: ext.sha256(p) for n, p in pub.items()} == meta["published_inputs"], "published results changed"
-    delta_pub = meta["delta_published_eight"]
+    delta_pub = meta["delta_published_seven"]
     lines = write_outputs(read({**pub, **new}), summary_frame(), meta, delta_pub, ext.load, ext.OUT, ROWS_PER_UNIT,
                           drift_frame())
     print("\n".join(lines))
@@ -543,7 +550,7 @@ class Truth:
 def selftest():
     from scipy.stats import ttest_1samp
     assert "scripts.es_time_analyse" not in sys.modules, "the registered analysis module must not be imported"
-    assert abs(multiplier(24, LEVEL) - 3.0095) < 5e-5 and abs(multiplier(16, LEVEL) - 3.1771) < 5e-5
+    assert abs(multiplier(23, LEVEL) - 3.0231) < 5e-5 and abs(multiplier(16, LEVEL) - 3.1771) < 5e-5
     assert abs(multiplier(22, LEVEL) - 3.0382) < 5e-5 and abs(half_width(np.array([1.0, -1.0] * 12), LEVEL)
                                                               - 3.0095 * np.std([1.0, -1.0] * 12, ddof=1) / np.sqrt(24)) < 1e-4
     assert label(0.001, 0.003, 0.005) == "first fit ahead, equivalent within delta"
@@ -557,8 +564,8 @@ def selftest():
     a, b = np.arange(8, dtype=float), np.arange(16, dtype=float) + 1.0
     m, lo, hi, df = welch(a, b, LEVEL)
     assert m < 0 and hi < 0 and abs(m - (a.mean() - b.mean())) < 1e-12 and lo < m < hi and 8 <= df <= 22
-    unit = one_unit(pd.Series(np.arange(24.0), index=ALL), NYC, "x")
-    assert len(unit) == 22 and abs(unit["x"] - np.mean([ALL.index(n) for n in TRIO])) < 1e-12 and NYC == TRIO
+    unit = one_unit(pd.Series(np.arange(23.0), index=ALL), NYC, "x")
+    assert len(unit) == 21 and abs(unit["x"] - np.mean([ALL.index(n) for n in TRIO])) < 1e-12 and NYC == TRIO
     assert has_number("0.0020", "-0.0020 [-0.0066, +0.0026] (n 24, 23 df)") is False
     assert has_number("-0.0020", "-0.0020 [-0.0066, +0.0026] (n 24, 23 df)") and not has_number("0.01", "0.012")
     assert not has_number("1", "H1 seed0") and not has_number("-5.3", "-5.3e-05") and has_number("99.375", "at 99.375%")
@@ -567,7 +574,7 @@ def selftest():
     fits = fake_fits(rng)
     truth = Truth(fits, LEVEL)
     meta = compute_delta(fits, LEVEL)
-    assert meta["level"] == LEVEL and len(meta["half_widths"]) == 15 and abs(meta["multiplier"] - 3.0095) < 5e-5
+    assert meta["level"] == LEVEL and len(meta["half_widths"]) == 15 and abs(meta["multiplier"] - 3.0231) < 5e-5
     assert abs(meta["delta"] - independent_delta(fits, LEVEL)) < 1e-9, "delta differs from the independent computation"
     assert meta["rows_read"].endswith(f"{len(ALL) * len(SEEDS) * 3} rows")
     summary = pd.DataFrame({"low_signal": [n in LOW for n in ALL], "c3_ef_max": [0.1 if n in LAG else 0.01 for n in ALL],
@@ -614,9 +621,9 @@ def selftest():
             assert f"    cut {k + 1}: {truth.fmt(truth.per(a, b, cut=k))}\n" in out, (h, k)
         assert f"  {h}: {truth.fmt(truth.per(a, b, 'e1'))}\n" in out, h
         assert f"  {h}: {truth.fmt(v.drop('nyc-311'))}\n" in out, h
-        mw, lw, hw, dfw = truth.welch(v.loc[ext.PUBLISHED].to_numpy(), v.loc[new].to_numpy())
+        mw, lw, hw, dfw = truth.welch(v.loc[PUB].to_numpy(), v.loc[new].to_numpy())
         unit = pd.concat([v.drop(TRIO), pd.Series({"u": v.loc[TRIO].mean()})])
-        assert (f" {h}: the 16 new datasets alone {truth.fmt(v.loc[new])}; the eight published datasets minus the new ones "
+        assert (f" {h}: the 16 new datasets alone {truth.fmt(v.loc[new])}; the seven published datasets minus the new ones "
                 f"{mw:+.4f} [{lw:+.4f}, {hw:+.4f}] (Welch, {dfw:.1f} df); New York 2023 datasets as one unit "
                 f"{truth.fmt(unit)}\n") in out, h
         if h == "H1":
@@ -632,7 +639,7 @@ def selftest():
     for name, (a, b) in {"D - DR": ("d", "dr"), "T - EF": ("t", "ef"), "D - D_own": ("d", "d_own"),
                          "DR - ER": ("dr", "er"), "D_T9 - D_T": ("d_t9", "d_t")}.items():
         assert f"  {name}: {truth.fmt(truth.per(a, b))}\n" in out, name
-    assert "multiplier 3.0095" in out and "99.375%" in out
+    assert "multiplier 3.0231" in out and "99.375%" in out and "f1-dnf" not in out
     f2 = fits[(fits.scheme == "e2") & (fits.stage == "final") & fits.arm.isin(["er_t", "ef_t"])].pivot_table(
         index=["dataset", "seed", "cut"], columns="arm", values="best")
     ratio = (f2.er_t / f2.ef_t).groupby("dataset").median()
@@ -646,13 +653,13 @@ def selftest():
     for r in forest_rows.itertuples():
         a, b = names[r.hypothesis][2:]
         v = truth.per(a, b)
-        v = {"24 datasets": v, "16 new datasets": v.loc[new], "without the low-signal datasets": v.drop(low)}[r.block]
+        v = {"23 datasets": v, "16 new datasets": v.loc[new], "without the low-signal datasets": v.drop(low)}[r.block]
         m, lo, hi = truth.interval(v)
         assert (r.first, r.second, r.n) == (a, b, len(v)) and abs(r.estimate - m) < 2e-6 and abs(r.lower - lo) < 2e-6
-        assert abs(r.upper - hi) < 2e-6 and abs(r.delta - d) < 2e-6 and abs(r.delta_published_eight - delta_pub) < 2e-6
-        assert r.label == (label(lo, hi, d) if r.block == "24 datasets" else ""), r
+        assert abs(r.upper - hi) < 2e-6 and abs(r.delta - d) < 2e-6 and abs(r.delta_published_seven - delta_pub) < 2e-6
+        assert r.label == (label(lo, hi, d) if r.block == "23 datasets" else ""), r
     pts = pd.read_csv(io.BytesIO(texts[0]["per_dataset_points.csv"]))
-    assert len(pts) == 4 * (24 + 16 + 14)
+    assert len(pts) == 4 * (23 + 16 + 14)
     table = pd.read_csv(io.BytesIO(texts[0]["per_dataset_ext.csv"]))
     row = table[(table.scheme == "e2") & (table.dataset == "hotels") & (table.hyp == "H2") & (table.cut == 0)].iloc[0]
     x = truth.fits[(truth.fits.scheme == "e2") & (truth.fits.dataset == "hotels")].pivot_table(
@@ -681,30 +688,31 @@ def selftest():
         except (AssertionError, KeyError):
             continue
         raise AssertionError(f"no error for {what}")
-    print("selftest passed: level 99.375 %, multiplier 3.0095, every printed interval, label, count and csv cell equals an "
+    print("selftest passed: level 99.375 %, multiplier 3.0231, every printed interval, label, count and csv cell equals an "
           "independent computation, delta equals an enumeration, two runs byte-identical, bad inputs raise")
 
 
 def reproduce():
-    """The extension's functions at the first look's level (98.75 %) on the eight stored published fits give the first
-    look's A/A delta of the eight datasets (0.00727), its per-dataset points and its pooled rows (estimate, interval and
-    label under its delta) in public/per_dataset_points.csv and public/forest.csv."""
+    """The extension's functions at the first look's level (98.75 %) on the seven stored published fits kept give the
+    first look's A/A delta of the seven datasets (0.00866), its per-dataset points and its pooled rows (estimate, interval
+    and label under that delta) in public/per_dataset_points.csv and public/forest.csv."""
     ext.assert_pins()
-    fits = read(ext.stored_fit_files())
-    delta_8 = published_delta(fits)
-    assert round(delta_8, 5) == 0.00727, delta_8
+    fits = read(stored()[0])
+    delta_7 = published_delta(fits)
+    assert round(delta_7, 5) == 0.00866, delta_7
     w = cells(fits)
     pub = pd.read_csv(ext.FIRST / "public/per_dataset_points.csv")
     forest_ref = pd.read_csv(ext.FIRST / "public/forest.csv").set_index("hypothesis")
     for h, (a, b) in HYP.items():
-        mine = diff(w, a, b).xs(("thin", "e2"), level=("pop", "scheme")).groupby("dataset").mean().loc[ext.PUBLISHED]
-        ref = pub[pub.hypothesis == h].set_index("dataset").value.loc[ext.PUBLISHED]
+        mine = diff(w, a, b).xs(("thin", "e2"), level=("pop", "scheme")).groupby("dataset").mean().loc[PUB]
+        ref = pub[pub.hypothesis == h].set_index("dataset").value.loc[PUB]
         assert (mine.round(6) - ref).abs().max() < 2e-6, h
         m, lo, hi = pooled(mine, FIRST_LEVEL)
         r = forest_ref.loc[h]
         assert abs(m - r.estimate) < 2e-6 and abs(lo - r.lower) < 2e-6 and abs(hi - r.upper) < 2e-6, h
-        assert label(lo, hi, r.delta) == r.label and (r["first"], r["second"], r.n) == (a, b, 8), h
-    print(f"reproduce: delta of the eight published datasets {delta_8:.5f}; per-dataset H1 to H4 and the pooled rows equal "
+        assert label(lo, hi, r.delta_recomputed) == r.label and abs(r.delta_recomputed - delta_7) < 2e-6, h
+        assert (r["first"], r["second"], r.n) == (a, b, 7), h
+    print(f"reproduce: delta of the seven published datasets {delta_7:.5f}; per-dataset H1 to H4 and the pooled rows equal "
           "the public files")
 
 

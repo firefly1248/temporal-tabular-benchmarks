@@ -3,7 +3,8 @@
 Imports scripts/es_time.py (the registered runner) and replaces its dataset list, its paths, its manifest name and
 the functions that hard-code them (load, run_log). The fits of the eight published datasets are reused as
 they are; this runner only asserts their hashes. Every fit, arm, split, candidate list and seed is the first
-run's. Run from a checkout of SmallDataBenchmarks at f2d89f2 with the extension scripts copied into scripts/.
+run's. Run from a checkout of SmallDataBenchmarks at b7ec006 or a later commit, with the extension scripts copied
+into scripts/.
 
 Usage: python -m scripts.es_time_ext check              pins, hashes, geometry, candidates, one reduced unit
        python -m scripts.es_time_ext smoke              seed 0 of nyc-311 and dota2; timings and capped shares only
@@ -50,7 +51,9 @@ PINS = {"scripts/es_time.py": "4cf0cdf382c3875eb51c55d8e667b9f9b59bcc719581beafc
 EXT_PINS = {"_manifest_ext.json": "bf4bb759b045471a85037e9169d9c4db7db7d5e70d955bec9d04c1f66a0ea9ce",
             "_summary_thin_ext.csv": "6da2fa6fc360587cd8849ec1f61afdad411c4c3fec073d4e0172eb44e7ad4ab9"}
 FIRST_MANIFEST = "687216575424d7e39723161a8d7bc5932d06112459363b6eaf81bf4e50fc9cd4"
-SDB_COMMIT = "f2d89f2"  # the checkout of SmallDataBenchmarks; its first plan is pinned as committed there
+# The first plan is pinned as committed at this SmallDataBenchmarks commit. The run used f2d89f2; its history was
+# rewritten afterwards, and b7ec006 has the same tree.
+SDB_COMMIT = "b7ec006"
 FIRST_PLAN = "early_stopping_time_plan.md", "9a5d08ee641733cecdf10d87ebef4a223c1926dd121fd9eb6b57e176e4ea03da"
 FIRST_VERSIONS = ("numpy", "pandas", "lightgbm", "scipy", "sklearn", "optuna")
 SCRIPTS = ("es_time_prep_ext.py", "es_time_ext.py", "es_time_ext_analyse.py")
@@ -97,7 +100,8 @@ def assert_pins():
     inputs = json.load(open(FIRST / "delta.json"))["inputs"]
     for name, path in stored_fit_files().items():
         assert sha256(path) == inputs[name], f"{name}: stored fit changed"
-    assert git("rev-parse", "HEAD", repo=SDB).startswith(SDB_COMMIT), f"the checkout is not at {SDB_COMMIT}"
+    assert subprocess.run(["git", "-C", str(SDB), "merge-base", "--is-ancestor", SDB_COMMIT, "HEAD"]).returncode == 0, \
+        f"the checkout does not contain {SDB_COMMIT}"
     assert hashlib.sha256(git_blob(FIRST_PLAN[0])).hexdigest() == FIRST_PLAN[1], "the first plan as committed changed"
     first_versions = next(e["versions"] for e in map(json.loads, open(FIRST / "run_log.jsonl")) if e["pop"] == "thin")
     assert {k: v for k, v in package_versions().items() if k in FIRST_VERSIONS} == first_versions, \
@@ -155,8 +159,9 @@ def run_files():
 
 def fit_inputs(files):
     """What the stored fits depend on: everything in the hashed files except the plan and the analysis script, which may
-    gain a dated deviation after the run."""
-    return {k: v for k, v in files.items() if k not in (PLAN, "scripts/es_time_ext_analyse.py")}
+    gain a dated deviation after the run, and this runner, whose SmallDataBenchmarks pin changed after the run (plan,
+    Deviations, 2026-11-23)."""
+    return {k: v for k, v in files.items() if k not in (PLAN, "scripts/es_time_ext_analyse.py", "scripts/es_time_ext.py")}
 
 
 def environment():

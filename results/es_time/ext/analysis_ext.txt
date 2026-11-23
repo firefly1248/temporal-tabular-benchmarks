@@ -1,12 +1,12 @@
-Before analysis: 120 units (expected 120); units with a wrong row count: none; failed fits or NaN scores: 0
-Primary: thin, E2 (differences of test average precision, mean over 3 cuts and 5 seeds per dataset; pooled over 24 datasets; t-interval at 99.375%, 23 df, multiplier 3.0095; delta 0.00299, delta of the eight published datasets 0.00727)
- H1 D_T - DR_T: -0.0015 [-0.0048, +0.0018] (n 24, 23 df), half-width 0.0033
-    label: no difference found (delta 0.00299); ahead 10 / behind 14 / tied 0; leave-one-out: robust; cells without a value: 0
-    companion label under the delta of the eight published datasets 0.00727 (no verdict): no difference found, equivalent within delta
-    without low-signal datasets (f1-dnf, nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0002 [-0.0034, +0.0038] (n 14, 13 df)
-    without datasets above 5 % EF stopping-set label lag (nycflights, nypd-shooting, dota2, nyc-311): -0.0015 [-0.0054, +0.0023] (n 20, 19 df)
-    without datasets with over 25 % capped ER_T or EF_T final fits (hotels): -0.0015 [-0.0050, +0.0019] (n 23, 22 df)
-    cells with equal tree counts for D_T and DR_T, per dataset: hotels 0.07, wildlife 0.07, f1-dnf 0.07, nba 0.00, elec 0.00, nebraska-weather 0.00, nycflights 0.00, bank-full 0.07, austin 0.00, kickstarter 0.00, chicago-food 0.00, nypd-shooting 0.00, seattle-stops 0.07, stats19 0.00, london-fire 0.07, dvsa-mot 0.00, nyc-collisions 0.00, tlc-yellow 0.13, nflverse 0.07, moneypuck 0.07, citibike 0.07, dota2 0.07, lichess 0.00, nyc-311 0.13
+Before analysis: 115 units (expected 115); units with a wrong row count: none; failed fits or NaN scores: 0
+Primary: thin, E2 (differences of test average precision, mean over 3 cuts and 5 seeds per dataset; pooled over 23 datasets; t-interval at 99.375%, 22 df, multiplier 3.0231; delta 0.00313, delta of the seven published datasets 0.00866)
+ H1 D_T - DR_T: -0.0016 [-0.0050, +0.0018] (n 23, 22 df), half-width 0.0034
+    label: no difference found (delta 0.00313); ahead 9 / behind 14 / tied 0; leave-one-out: robust; cells without a value: 0
+    companion label under the delta of the seven published datasets 0.00866 (no verdict): no difference found, equivalent within delta
+    without low-signal datasets (nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0002 [-0.0034, +0.0038] (n 14, 13 df)
+    without datasets above 5 % EF stopping-set label lag (nycflights, nypd-shooting, dota2, nyc-311): -0.0017 [-0.0057, +0.0024] (n 19, 18 df)
+    without datasets with over 25 % capped ER_T or EF_T final fits (hotels): -0.0016 [-0.0052, +0.0020] (n 22, 21 df)
+    cells with equal tree counts for D_T and DR_T, per dataset: hotels 0.07, wildlife 0.07, nba 0.00, elec 0.00, nebraska-weather 0.00, nycflights 0.00, bank-full 0.07, austin 0.00, kickstarter 0.00, chicago-food 0.00, nypd-shooting 0.00, seattle-stops 0.07, stats19 0.00, london-fire 0.07, dvsa-mot 0.00, nyc-collisions 0.00, tlc-yellow 0.13, nflverse 0.07, moneypuck 0.07, citibike 0.07, dota2 0.07, lichess 0.00, nyc-311 0.13
     columns that change coding, drift AUC and H1 per cut:
       stats19 special_conditions_at_site cut 1: drift AUC 0.786, H1 +0.0001
       stats19 special_conditions_at_site cut 2: drift AUC 0.741, H1 -0.0011
@@ -14,56 +14,56 @@ Primary: thin, E2 (differences of test average precision, mean over 3 cuts and 5
       nyc-collisions VEHICLE TYPE CODE 1 cut 1: drift AUC 0.656, H1 +0.0022
       nyc-collisions VEHICLE TYPE CODE 1 cut 2: drift AUC 0.516, H1 +0.0027
       nyc-collisions VEHICLE TYPE CODE 1 cut 3: drift AUC 0.578, H1 -0.0155
-    cut 1: -0.0026 [-0.0091, +0.0039] (n 24, 23 df)
-    cut 2: -0.0000 [-0.0022, +0.0021] (n 24, 23 df)
-    cut 3: -0.0018 [-0.0064, +0.0027] (n 24, 23 df)
- H2 D - EF: +0.0038 [-0.0016, +0.0093] (n 24, 23 df), half-width 0.0054
-    label: no difference found (delta 0.00299); ahead 18 / behind 6 / tied 0; leave-one-out: not robust, flagged by elec; cells without a value: 0
-    companion label under the delta of the eight published datasets 0.00727 (no verdict): no difference found
-    without low-signal datasets (f1-dnf, nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0054 [-0.0038, +0.0147] (n 14, 13 df)
-    cut 1: +0.0057 [-0.0024, +0.0139] (n 24, 23 df)
-    cut 2: +0.0022 [-0.0031, +0.0075] (n 24, 23 df)
-    cut 3: +0.0035 [-0.0043, +0.0113] (n 24, 23 df)
- H3 T - D_OWN: +0.0039 [+0.0003, +0.0075] (n 24, 23 df), half-width 0.0036
-    label: first fit ahead (delta 0.00299); ahead 19 / behind 4 / tied 1; leave-one-out: robust; cells without a value: 0
-    companion label under the delta of the eight published datasets 0.00727 (no verdict): first fit ahead
-    without low-signal datasets (f1-dnf, nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0017 [-0.0021, +0.0055] (n 14, 13 df)
-    cut 1: +0.0045 [-0.0033, +0.0123] (n 24, 23 df)
-    cut 2: +0.0028 [-0.0039, +0.0095] (n 24, 23 df)
-    cut 3: +0.0044 [-0.0033, +0.0121] (n 24, 23 df)
- H4 T - ER: +0.0035 [+0.0007, +0.0064] (n 24, 23 df), half-width 0.0029
-    label: first fit ahead (delta 0.00299); ahead 18 / behind 5 / tied 1; leave-one-out: not robust, flagged by nyc-collisions; cells without a value: 0
-    companion label under the delta of the eight published datasets 0.00727 (no verdict): first fit ahead, equivalent within delta
-    without low-signal datasets (f1-dnf, nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0031 [+0.0000, +0.0062] (n 14, 13 df)
-    cut 1: +0.0031 [-0.0006, +0.0068] (n 24, 23 df)
-    cut 2: +0.0078 [+0.0016, +0.0141] (n 24, 23 df)
-    cut 3: -0.0003 [-0.0050, +0.0044] (n 24, 23 df)
+    cut 1: -0.0028 [-0.0096, +0.0040] (n 23, 22 df)
+    cut 2: -0.0000 [-0.0023, +0.0022] (n 23, 22 df)
+    cut 3: -0.0019 [-0.0067, +0.0028] (n 23, 22 df)
+ H2 D - EF: +0.0040 [-0.0016, +0.0097] (n 23, 22 df), half-width 0.0057
+    label: no difference found (delta 0.00313); ahead 18 / behind 5 / tied 0; leave-one-out: not robust, flagged by elec; cells without a value: 0
+    companion label under the delta of the seven published datasets 0.00866 (no verdict): no difference found
+    without low-signal datasets (nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0054 [-0.0038, +0.0147] (n 14, 13 df)
+    cut 1: +0.0062 [-0.0023, +0.0146] (n 23, 22 df)
+    cut 2: +0.0024 [-0.0032, +0.0079] (n 23, 22 df)
+    cut 3: +0.0036 [-0.0046, +0.0118] (n 23, 22 df)
+ H3 T - D_OWN: +0.0040 [+0.0002, +0.0077] (n 23, 22 df), half-width 0.0038
+    label: first fit ahead (delta 0.00313); ahead 18 / behind 4 / tied 1; leave-one-out: robust; cells without a value: 0
+    companion label under the delta of the seven published datasets 0.00866 (no verdict): first fit ahead, equivalent within delta
+    without low-signal datasets (nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0017 [-0.0021, +0.0055] (n 14, 13 df)
+    cut 1: +0.0045 [-0.0037, +0.0127] (n 23, 22 df)
+    cut 2: +0.0030 [-0.0040, +0.0100] (n 23, 22 df)
+    cut 3: +0.0044 [-0.0037, +0.0125] (n 23, 22 df)
+ H4 T - ER: +0.0036 [+0.0006, +0.0066] (n 23, 22 df), half-width 0.0030
+    label: first fit ahead (delta 0.00313); ahead 17 / behind 5 / tied 1; leave-one-out: not robust, flagged by nyc-collisions; cells without a value: 0
+    companion label under the delta of the seven published datasets 0.00866 (no verdict): first fit ahead, equivalent within delta
+    without low-signal datasets (nycflights, bank-full, chicago-food, nypd-shooting, stats19, nyc-collisions, tlc-yellow, citibike, dota2): +0.0031 [+0.0000, +0.0062] (n 14, 13 df)
+    cut 1: +0.0032 [-0.0007, +0.0070] (n 23, 22 df)
+    cut 2: +0.0081 [+0.0015, +0.0146] (n 23, 22 df)
+    cut 3: -0.0005 [-0.0054, +0.0044] (n 23, 22 df)
 
 Secondary, no labels (same level)
- H1: the 16 new datasets alone -0.0013 [-0.0044, +0.0017] (n 16, 15 df); the eight published datasets minus the new ones -0.0004 [-0.0109, +0.0100] (Welch, 8.8 df); New York 2023 datasets as one unit -0.0011 [-0.0044, +0.0022] (n 22, 21 df)
- H2: the 16 new datasets alone +0.0026 [+0.0002, +0.0050] (n 16, 15 df); the eight published datasets minus the new ones +0.0037 [-0.0168, +0.0241] (Welch, 7.3 df); New York 2023 datasets as one unit +0.0037 [-0.0023, +0.0096] (n 22, 21 df)
- H3: the 16 new datasets alone +0.0036 [-0.0011, +0.0082] (n 16, 15 df); the eight published datasets minus the new ones +0.0010 [-0.0074, +0.0095] (Welch, 13.6 df); New York 2023 datasets as one unit +0.0037 [+0.0003, +0.0072] (n 22, 21 df)
- H4: the 16 new datasets alone +0.0040 [+0.0002, +0.0078] (n 16, 15 df); the eight published datasets minus the new ones -0.0014 [-0.0079, +0.0052] (Welch, 14.1 df); New York 2023 datasets as one unit +0.0036 [+0.0005, +0.0066] (n 22, 21 df)
+ H1: the 16 new datasets alone -0.0013 [-0.0044, +0.0017] (n 16, 15 df); the seven published datasets minus the new ones -0.0008 [-0.0134, +0.0118] (Welch, 7.2 df); New York 2023 datasets as one unit -0.0012 [-0.0047, +0.0023] (n 21, 20 df)
+ H2: the 16 new datasets alone +0.0026 [+0.0002, +0.0050] (n 16, 15 df); the seven published datasets minus the new ones +0.0047 [-0.0199, +0.0294] (Welch, 6.2 df); New York 2023 datasets as one unit +0.0039 [-0.0023, +0.0102] (n 21, 20 df)
+ H3: the 16 new datasets alone +0.0036 [-0.0011, +0.0082] (n 16, 15 df); the seven published datasets minus the new ones +0.0013 [-0.0085, +0.0112] (Welch, 10.4 df); New York 2023 datasets as one unit +0.0038 [+0.0002, +0.0074] (n 21, 20 df)
+ H4: the 16 new datasets alone +0.0040 [+0.0002, +0.0078] (n 16, 15 df); the seven published datasets minus the new ones -0.0014 [-0.0090, +0.0063] (Welch, 10.8 df); New York 2023 datasets as one unit +0.0036 [+0.0004, +0.0068] (n 21, 20 df)
 
 Sensitivity, no labels: E1 (expanding window)
-  H1: -0.0007 [-0.0032, +0.0018] (n 24, 23 df)
-  H2: +0.0047 [+0.0001, +0.0092] (n 24, 23 df)
-  H3: +0.0013 [-0.0008, +0.0035] (n 24, 23 df)
-  H4: +0.0025 [-0.0000, +0.0051] (n 24, 23 df)
+  H1: -0.0007 [-0.0034, +0.0019] (n 23, 22 df)
+  H2: +0.0046 [-0.0003, +0.0094] (n 23, 22 df)
+  H3: +0.0015 [-0.0007, +0.0037] (n 23, 22 df)
+  H4: +0.0025 [-0.0001, +0.0052] (n 23, 22 df)
 
 Exploratory: pooled without nyc-311
-  H1: -0.0015 [-0.0049, +0.0019] (n 23, 22 df)
-  H2: +0.0039 [-0.0018, +0.0096] (n 23, 22 df)
-  H3: +0.0041 [+0.0005, +0.0078] (n 23, 22 df)
-  H4: +0.0036 [+0.0006, +0.0066] (n 23, 22 df)
+  H1: -0.0016 [-0.0052, +0.0020] (n 22, 21 df)
+  H2: +0.0041 [-0.0019, +0.0100] (n 22, 21 df)
+  H3: +0.0042 [+0.0004, +0.0081] (n 22, 21 df)
+  H4: +0.0037 [+0.0005, +0.0068] (n 22, 21 df)
 
 Descriptive differences, thin E2 (no label):
-  D - DR: -0.0020 [-0.0066, +0.0026] (n 24, 23 df)
-  T - EF: +0.0083 [-0.0002, +0.0167] (n 24, 23 df)
-  D - D_own: -0.0005 [-0.0028, +0.0017] (n 24, 23 df)
-  DR - ER: +0.0011 [-0.0008, +0.0029] (n 24, 23 df)
-  D_T9 - D_T: +0.0000 [-0.0003, +0.0004] (n 24, 23 df)
-  median ER_T / EF_T best iteration per dataset: austin 0.95, bank-full 3.00, chicago-food 0.78, citibike 1.00, dota2 0.71, dvsa-mot 1.25, elec 3.82, f1-dnf 0.73, hotels 1.06, kickstarter 1.07, lichess 0.94, london-fire 1.12, moneypuck 0.46, nba 1.05, nebraska-weather 1.24, nflverse 1.01, nyc-311 0.93, nyc-collisions 1.09, nycflights 2.24, nypd-shooting 6.33, seattle-stops 1.27, stats19 1.14, tlc-yellow 1.00, wildlife 0.65
+  D - DR: -0.0023 [-0.0070, +0.0024] (n 23, 22 df)
+  T - EF: +0.0087 [-0.0000, +0.0175] (n 23, 22 df)
+  D - D_own: -0.0007 [-0.0030, +0.0016] (n 23, 22 df)
+  DR - ER: +0.0012 [-0.0007, +0.0031] (n 23, 22 df)
+  D_T9 - D_T: +0.0001 [-0.0003, +0.0004] (n 23, 22 df)
+  median ER_T / EF_T best iteration per dataset: austin 0.95, bank-full 3.00, chicago-food 0.78, citibike 1.00, dota2 0.71, dvsa-mot 1.25, elec 3.82, hotels 1.06, kickstarter 1.07, lichess 0.94, london-fire 1.12, moneypuck 0.46, nba 1.05, nebraska-weather 1.24, nflverse 1.01, nyc-311 0.93, nyc-collisions 1.09, nycflights 2.24, nypd-shooting 6.33, seattle-stops 1.27, stats19 1.14, tlc-yellow 1.00, wildlife 0.65
   share of cells where two arms pick the same candidate (mean over datasets):
     d_own_es = ef: 0.23
     er = ef: 0.09
@@ -74,36 +74,36 @@ Diagnostics, thin E2 (the last block: new datasets, E2 and E1):
  median trees per arm and cut (inner, final):
 cut                 0      1      2
 stage arm                          
-final d          70.0   56.0   57.0
-      d_own      65.0   66.0   54.0
-      d_own_es   65.0   66.0   54.0
-      d_t       111.0  124.0  112.0
-      d_t9      123.0  137.0  124.0
-      dr         65.0   62.0   70.0
-      dr_t      122.0  132.0  114.0
-      ef         70.0   56.0   57.0
-      ef_t      111.0  124.0  112.0
-      er         65.0   62.0   70.0
-      er_t      122.0  132.0  114.0
-      t         164.0  168.0  178.0
-inner d_own      30.0   37.0   35.0
-      ef         30.0   37.0   35.0
-      er         38.0   38.0   39.0
+final d          71.0   55.0   57.0
+      d_own      64.0   65.0   54.0
+      d_own_es   64.0   65.0   54.0
+      d_t       111.0  121.0  104.0
+      d_t9      123.0  134.0  116.0
+      dr         63.0   63.0   73.0
+      dr_t      119.0  134.0  115.0
+      ef         71.0   55.0   57.0
+      ef_t      111.0  121.0  104.0
+      er         63.0   63.0   73.0
+      er_t      119.0  134.0  115.0
+      t         160.0  167.0  184.0
+inner d_own      30.0   38.0   35.0
+      ef         30.0   38.0   35.0
+      er         39.0   39.0   40.0
       t         274.0  274.0  274.0
  capped share of ES fits (best iteration above 480):
 stage  arm     
 final  d_own_es    0.017
-       ef          0.008
+       ef          0.009
        ef_t        0.017
-       er          0.025
-       er_t        0.025
+       er          0.026
+       er_t        0.026
 inner  ef          0.005
-       er          0.007
+       er          0.008
  stopping-set optimism, final ER and EF fits (test minus stopping set), unseen-level shares, best iterations:
      ll_gap  ap_gap  unseen_stop  unseen_tgt  best  best_ap_iter
 arm                                                             
-ef   0.0264 -0.0216       0.0334      0.0637  61.5          25.0
-er   0.0239 -0.0242       0.0105      0.0471  67.0          31.5
+ef   0.0260 -0.0175       0.0205      0.0332  61.0          25.0
+er   0.0255 -0.0130       0.0107      0.0237  68.0          32.0
  the same, for the published datasets (never recoded), the new datasets with rare levels recoded and the other new ones:
                       ll_gap  ap_gap  unseen_stop  unseen_tgt  best  best_ap_iter
 group            arm                                                             
@@ -111,8 +111,8 @@ new, not recoded ef   0.0160 -0.0344       0.0161      0.0209  67.0          21.
                  er   0.0117 -0.0172       0.0036      0.0063  46.0          18.0
 new, recoded     ef   0.0124 -0.0075       0.0227      0.0359  61.0          30.0
                  er   0.0130 -0.0035       0.0143      0.0236  69.0          34.0
-published        ef   0.0521 -0.0329       0.0588      0.1286  58.0          21.5
-                 er   0.0465 -0.0570       0.0095      0.1049  70.5          45.5
+published        ef   0.0545 -0.0212       0.0201      0.0379  58.0          20.0
+                 er   0.0549 -0.0248       0.0101      0.0363  78.0          47.0
  unseen-level shares per dataset (final ER and EF fits, mean): stopping set, test block
                       unseen_stop  unseen_tgt
 dataset          arm                         
@@ -130,8 +130,6 @@ dvsa-mot         ef        0.0332      0.0341
                  er        0.0347      0.0350
 elec             ef        0.0000      0.0000
                  er        0.0000      0.0000
-f1-dnf           ef        0.3295      0.7640
-                 er        0.0055      0.5852
 hotels           ef        0.0758      0.0815
                  er        0.0281      0.0772
 kickstarter      ef        0.0149      0.0541
